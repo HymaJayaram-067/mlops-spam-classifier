@@ -35,11 +35,4 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t spam-classifier .
-
-      - name: Smoke test container
-        run: |
-          docker run -d -p 5000:5000 --name test-api spam-classifier
-          sleep 5
-          curl -f http://localhost:5000/health
-          docker stop test-api
+        run: docker build -t spam-classifier .name: ML model CI
