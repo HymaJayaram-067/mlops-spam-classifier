@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: spam-classifier
     steps:
       - uses: actions/checkout@v3
 
@@ -36,4 +39,3 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t spam-classifier ./spam-classifier
-        
