@@ -9,4 +9,4 @@ COPY . .
 
 RUN python train.py
 
-CMD ["python", "predict.py"]
+CMD ["uvicorn","app:app","--host","0.0.0.0","--port","8000"]

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spam-classifier
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spam-classifier
+  template:
+    metadata:
+      labels:
+        app: spam-classifier
+    spec:
+      containers:
+      - name: spam-classifier
+        image: spam-classifier:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000

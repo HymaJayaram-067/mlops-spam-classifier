@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import pickle
-import redis
 import json
 
 app = FastAPI()
@@ -10,8 +9,10 @@ with open('model.pkl', 'rb') as f:
     model = pickle.load(f)
 
 try:
-    r = redis.Redis(host='redis', port=6379, decode_responses=True)
-except:
+    import redis
+    r = redis.Redis(host='redis', port=6379, decode_responses=True, socket_connect_timeout=1)
+    r.ping()
+except Exception:
     r = None
 
 class TextInput(BaseModel):
@@ -22,15 +23,21 @@ def predict(input: TextInput):
     pred = model.predict([input.text])[0]
     label = "SPAM" if pred == 1 else "NOT SPAM"
     if r:
-        r.lpush('predictions', json.dumps({"text": input.text, "prediction": label}))
+        try:
+            r.lpush('predictions', json.dumps({"text": input.text, "prediction": label}))
+        except Exception:
+            pass
     return {"text": input.text, "prediction": label}
 
 @app.get('/history')
 def history():
     if not r:
         return []
-    predictions = r.lrange('predictions', 0, 9)
-    return [json.loads(p) for p in predictions]
+    try:
+        predictions = r.lrange('predictions', 0, 9)
+        return [json.loads(p) for p in predictions]
+    except Exception:
+        return []
 
 @app.get('/health')
 def health():
