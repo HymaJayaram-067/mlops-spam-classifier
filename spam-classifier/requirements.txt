@@ -4,3 +4,4 @@ mlflow
 fastapi
 uvicorn
 redis
+prometheus-fastapi-instrumentator
